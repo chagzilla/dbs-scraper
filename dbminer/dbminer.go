@@ -41,7 +41,16 @@ func Search(m DatabaseMiner) error {
 }
 
 func getRegex() []*regexp.Regexp {
-	return nil
+	return []*regexp.Regexp{
+		regexp.MustCompile(`(?i)social`),
+		regexp.MustCompile(`(?i)ssn`),
+		regexp.MustCompile(`(?i)pass(word)?`),
+		regexp.MustCompile(`(?i)hash`),
+		regexp.MustCompile(`(?i)ccnum`),
+		regexp.MustCompile(`(?i)card`),
+		regexp.MustCompile(`(?i)security`),
+		regexp.MustCompile(`(?i)key`),
+	}
 }
 
 func main() {
