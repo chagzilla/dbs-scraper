@@ -13,6 +13,11 @@ type Schema struct {
 	Databases []Database
 }
 
+type Database struct {
+	Name   string
+	Tables []Table
+}
+
 type Table struct {
 	Name    string
 	Columns []string
