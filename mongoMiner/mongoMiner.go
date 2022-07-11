@@ -1,19 +1,30 @@
 package mongoMiner
 
 import (
+	"fmt"
+
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 
 	"github.com/chagzilla/dbs-scraper/dbminer"
 )
 
-type MongoMiner struct {
-	Host    string
-	session *mgo.Session
+type Transaction struct {
+	CCNum      string  `bson:"ccnum"`
+	Date       string  `bson:"date"`
+	Amount     float32 `bson:"amount"`
+	Cvv        string  `bson:"cvv"`
+	Expiration string  `bson:"exp"`
 }
 
-func New(host string) (*MongoMiner, error) {
-	m := MongoMiner{Host: host}
+type MongoMiner struct {
+	Host     string
+	session  *mgo.Session
+	database string
+}
+
+func New(host, db string) (*MongoMiner, error) {
+	m := MongoMiner{Host: host, database: db}
 	err := m.connect()
 	if err != nil {
 		return nil, err
@@ -27,6 +38,18 @@ func (m *MongoMiner) connect() error {
 		return err
 	}
 	m.session = s
+	return nil
+}
+
+func (m *MongoMiner) PrintRecords(table string) error {
+
+	results := make([]Transaction, 0)
+	if err := m.session.DB(m.database).C(table).Find(nil).All(&results); err != nil {
+		return err
+	}
+	for _, txn := range results {
+		fmt.Println(txn.CCNum, txn.Date, txn.Amount, txn.Cvv, txn.Expiration)
+	}
 	return nil
 }
 
